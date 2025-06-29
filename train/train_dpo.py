@@ -13,16 +13,6 @@ import gc
 from constants import MODEL_NAME
 
 
-def compute_metrics(eval_preds):
-    chosen_rewards, rejected_rewards = eval_preds
-    accuracy = (chosen_rewards > rejected_rewards).astype(float).mean()
-    margin = (chosen_rewards - rejected_rewards).mean()
-    return {
-        "eval/accuracy": accuracy,
-        "eval/margin": margin,
-    }
-
-
 def run_dpo_training(config):
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     tokenizer.pad_token = tokenizer.eos_token
@@ -55,8 +45,8 @@ def run_dpo_training(config):
         learning_rate=config["learning_rate"],
         logging_steps=config["logging_steps"],
         save_strategy="steps",
-        save_steps=200,
-        save_total_limit=3,
+        save_steps=config.get("save_steps", 200),
+        save_total_limit=config.get("save_total_limit", 3),
         eval_steps=50,
         bf16=config["bf16"],
         bf16_full_eval=config["bf16"],
@@ -73,7 +63,6 @@ def run_dpo_training(config):
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         processing_class=tokenizer,
-        compute_metrics=compute_metrics,
         peft_config=None
     )
 

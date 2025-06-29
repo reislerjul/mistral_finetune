@@ -16,6 +16,10 @@ def main(dataset_name):
         print("Preparing FlammenAI Mahou dataset...")
         from data_prep.flammenai_mahou import prep_data
         prep_data()
+    elif dataset_name == "combined":
+        print("Combining all datasets...")
+        from data_prep.combine_datasets import combine_datasets
+        combine_datasets()
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}. Choose 'human_like_dpo' or 'flammenai_dpo'.")
 

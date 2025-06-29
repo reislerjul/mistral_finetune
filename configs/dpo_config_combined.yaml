@@ -1,0 +1,19 @@
+train_dataset_path: /home/ubuntu/mistral-finetune/mistral_finetune/data/combined/train.json
+eval_dataset_path: /home/ubuntu/mistral-finetune/mistral_finetune/data/combined/val.json
+output_dir:  /home/ubuntu/mistral-finetune/mistral_finetune/models/mistral-combined
+
+train_batch_size: 2
+eval_batch_size: 1
+gradient_accumulation_steps: 8
+learning_rate: 5e-6
+num_epochs: 1
+logging_steps: 10
+save_steps: 50
+save_total_limit: 10
+
+bf16: true
+dpo_beta: 0.1
+
+wandb_project: mistral-finetune
+wandb_entity: julia92796
+wandb_run_name: mistral-dpo-combined
