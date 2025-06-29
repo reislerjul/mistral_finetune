@@ -1,0 +1,17 @@
+train_dataset_path: /home/ubuntu/mistral-finetune-julia/mistral_finetune/data/human_like_dpo/train.json
+eval_dataset_path: /home/ubuntu/mistral-finetune-julia/mistral_finetune/data/human_like_dpo/val.json
+output_dir:  /home/ubuntu/mistral-finetune-julia/models/mistral-dpo
+
+train_batch_size: 1
+eval_batch_size: 1
+gradient_accumulation_steps: 1
+learning_rate: 5e-6
+num_epochs: 1
+logging_steps: 10
+
+bf16: true
+dpo_beta: 0.1
+
+wandb_project: mistral-finetune
+wandb_entity: julia92796
+wandb_run_name: mistral-dpo-v1
