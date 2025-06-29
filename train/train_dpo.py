@@ -7,8 +7,20 @@ from trl import DPOTrainer, DPOConfig
 from transformers import AutoModelForCausalLM
 from typing import Dict
 import os
+import bitsandbytes as bnb
+import gc
 
 from constants import MODEL_NAME
+
+
+def compute_metrics(eval_preds):
+    chosen_rewards, rejected_rewards = eval_preds
+    accuracy = (chosen_rewards > rejected_rewards).astype(float).mean()
+    margin = (chosen_rewards - rejected_rewards).mean()
+    return {
+        "eval/accuracy": accuracy,
+        "eval/margin": margin,
+    }
 
 
 def run_dpo_training(config):
@@ -31,6 +43,9 @@ def run_dpo_training(config):
     train_dataset = Dataset.from_dict(train_data)
     eval_dataset = Dataset.from_dict(eval_data)
 
+    torch.cuda.empty_cache()
+    gc.collect()
+
     dpo_config = DPOConfig(
         output_dir=config["output_dir"],
         per_device_train_batch_size=config["train_batch_size"],
@@ -40,13 +55,16 @@ def run_dpo_training(config):
         learning_rate=config["learning_rate"],
         logging_steps=config["logging_steps"],
         save_strategy="steps",
-        save_steps=100,
+        save_steps=200,
         save_total_limit=3,
         eval_steps=50,
         bf16=config["bf16"],
+        bf16_full_eval=config["bf16"],
+        gradient_checkpointing=True,
         report_to="wandb",
         run_name=config["wandb_run_name"],
         beta=config["dpo_beta"],
+        optim="paged_adamw_8bit"
     )
 
     trainer = DPOTrainer(
@@ -55,6 +73,7 @@ def run_dpo_training(config):
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         processing_class=tokenizer,
+        compute_metrics=compute_metrics,
         peft_config=None
     )
 

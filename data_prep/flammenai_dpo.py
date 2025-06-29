@@ -11,7 +11,7 @@ from constants import MAX_TOKEN_RESPONSE_LENGTH, MODEL_NAME
 
 random.seed(42)
 
-DATASET_NAME = "HumanLLMs/Human-Like-DPO-Dataset"  # Replace with the actual one you like
+DATASET_NAME = "flammenai/Date-DPO-v3"
 USER_NAME = "you"
 
 
@@ -85,8 +85,8 @@ def prep_data():
     train_split = unzip_split(train_data)
     val_split = unzip_split(val_data)
 
-    out_path_train = "/home/ubuntu/mistral-finetune/mistral_finetune/data/human_like_dpo/train.json"
-    out_path_val = "/home/ubuntu/mistral-finetune/mistral_finetune/data/human_like_dpo/val.json"
+    out_path_train = "/home/ubuntu/mistral-finetune/mistral_finetune/data/flammenai_dpo/train.json"
+    out_path_val = "/home/ubuntu/mistral-finetune/mistral_finetune/data/flammenai_dpo/val.json"
 
     if not os.path.exists(os.path.dirname(out_path_train)):
         os.makedirs(os.path.dirname(out_path_train))

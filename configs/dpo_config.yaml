@@ -1,10 +1,10 @@
-train_dataset_path: /home/ubuntu/mistral-finetune-julia/mistral_finetune/data/human_like_dpo/train.json
-eval_dataset_path: /home/ubuntu/mistral-finetune-julia/mistral_finetune/data/human_like_dpo/val.json
-output_dir:  /home/ubuntu/mistral-finetune-julia/models/mistral-dpo
+train_dataset_path: /home/ubuntu/mistral-finetune/mistral_finetune/data/human_like_dpo/train.json
+eval_dataset_path: /home/ubuntu/mistral-finetune/mistral_finetune/data/human_like_dpo/val.json
+output_dir:  /home/ubuntu/mistral-finetune/mistral_finetune/models/mistral-dpo
 
-train_batch_size: 1
+train_batch_size: 4
 eval_batch_size: 1
-gradient_accumulation_steps: 1
+gradient_accumulation_steps: 4
 learning_rate: 5e-6
 num_epochs: 1
 logging_steps: 10

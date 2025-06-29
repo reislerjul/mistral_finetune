@@ -5,26 +5,17 @@ import os
 import random
 from tqdm import tqdm
 import names
+import re
 
 from constants import MAX_TOKEN_RESPONSE_LENGTH, MODEL_NAME
 
 
 random.seed(42)
 
-DATASET_NAME = "HumanLLMs/Human-Like-DPO-Dataset"  # Replace with the actual one you like
+DATASET_NAME = "flammenai/MahouMix-v1"
 USER_NAME = "you"
 
 
-def chai_format(prompt, bot_name, user_name=USER_NAME, memory=None):
-    memory_prefix = f"{bot_name}'s Persona: {memory}\n####\n" if memory else ""
-    chat_prompt = f"{user_name}: {prompt}\n{bot_name}: "
-    return memory_prefix + chat_prompt
-
-def generate_bot_name():
-    if random.random() < 0.2:
-        return f"{names.get_first_name()} {names.get_last_name()}"
-    else:
-        return names.get_first_name()
 
 def unzip_split(data):
     p, c, r = zip(*data)
@@ -44,6 +35,7 @@ def prep_data():
     }
 
     num_removed = 0
+    i = 0
     for example in tqdm(ds, desc="Reformatting examples"):
         chosen_text = example["chosen"]
         rejected_text = example["rejected"]
@@ -58,16 +50,28 @@ def prep_data():
             num_removed += 1
             continue
 
-        bot_name = generate_bot_name()
-        prompt_formatted = chai_format(example["prompt"], bot_name)
+        
+        post_bio_split = re.split(r'<\|im_end\|>', example["prompt"], maxsplit=1)
+        if len(post_bio_split) < 2:
+            continue  # No conversation to process
+        conversation_text = post_bio_split[1]
 
-        reformatted["prompt"].append(prompt_formatted)
+        # Step 2: Replace <|im_start|>{name}\n → {name}: 
+        conversation_text = re.sub(
+            r'<\|im_start\|\>(.*?)\n',
+            lambda m: f"{m.group(1).strip()}: ",
+            conversation_text
+        )
+
+        # Step 3: Replace <|im_end|> (optionally followed by a newline) → \n
+        conversation_text = re.sub(r'<\|im_end\|>\n?', '\n', conversation_text)
+
+        reformatted["prompt"].append(conversation_text)
         reformatted["chosen"].append(chosen_response)
         reformatted["rejected"].append(rejected_response)
 
 
     print(f"Removed {num_removed} examples with long responses. Kept {len(reformatted['prompt'])} examples.")
-
 
     # Zip all examples together
     combined = list(zip(
@@ -85,8 +89,8 @@ def prep_data():
     train_split = unzip_split(train_data)
     val_split = unzip_split(val_data)
 
-    out_path_train = "/home/ubuntu/mistral-finetune/mistral_finetune/data/human_like_dpo/train.json"
-    out_path_val = "/home/ubuntu/mistral-finetune/mistral_finetune/data/human_like_dpo/val.json"
+    out_path_train = "/home/ubuntu/mistral-finetune/mistral_finetune/data/flammenai_mahou/train.json"
+    out_path_val = "/home/ubuntu/mistral-finetune/mistral_finetune/data/flammenai_mahou/val.json"
 
     if not os.path.exists(os.path.dirname(out_path_train)):
         os.makedirs(os.path.dirname(out_path_train))

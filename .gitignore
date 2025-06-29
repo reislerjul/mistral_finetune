@@ -17,3 +17,5 @@ data/
 
 wandb/
 # Ignore Weights & Biases files
+
+models/

@@ -8,6 +8,7 @@ def load_config(config_path):
 
 def main():
     config = load_config("configs/dpo_config.yaml")
+    config["learning_rate"] = float(config["learning_rate"])  # Ensure learning rate is a float
     
     os.environ["WANDB_PROJECT"] = config["wandb_project"]
     os.environ["WANDB_ENTITY"] = config["wandb_entity"]    

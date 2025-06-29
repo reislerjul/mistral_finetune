@@ -2,9 +2,12 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 from constants import MAX_TOKEN_RESPONSE_LENGTH, MAX_TOKEN_CONTEXT_LENGTH, MODEL_NAME
 
+
+MODEL_NAME = "jreisler/mistral-dpo-step-285"
+
 # Load model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.float16, device_map="balanced_low_0")
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(MODEL_NAME, torch_dtype=torch.float16, device_map="balanced_low_0")
 
 # CHAI formatting templates
 formatter = {
