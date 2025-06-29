@@ -24,6 +24,10 @@ def main(dataset_name):
         print("Preparing Chai Reward dataset...")
         from data_prep.chai_reward import prep_data
         prep_data()
+    elif dataset_name == "chai_duduk":
+        print("Preparing Chai Duduk dataset...")
+        from data_prep.chai_duduk import prep_data
+        prep_data()
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}. Choose 'human_like_dpo' or 'flammenai_dpo'.")
 

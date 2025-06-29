@@ -82,9 +82,7 @@ def prep_data():
             label_lengths.append(len(result["labels"]))
     
     processed_dataset = Dataset.from_list(processed_examples)
-
-    # print(set(id_lengths))
-    # print(set(label_lengths))
+    
     print("Processed dataset length:", len(processed_dataset))
 
     split_dataset = processed_dataset.train_test_split(test_size=0.05, seed=42)
