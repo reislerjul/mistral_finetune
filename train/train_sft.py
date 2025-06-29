@@ -61,8 +61,10 @@ def run_sft_training(config):
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
         torch_dtype=torch.bfloat16 if config["bf16"] else torch.float32,
-        device_map="auto"
+        device_map="auto",  # important for accelerate
+        # load_in_8bit=True   # required to trigger bitsandbytes memory savings
     )
+    # model.gradient_checkpointing_enable()
 
     # Load processed datasets
     train_dataset = load_from_disk(config["train_dataset_path"])
@@ -87,7 +89,13 @@ def run_sft_training(config):
         bf16=config["bf16"],
         report_to="wandb",
         run_name=config["wandb_run_name"],
+        gradient_checkpointing=True,
+        ddp_find_unused_parameters=False,
         optim="paged_adamw_8bit",
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
+        load_best_model_at_end=True,
+        eval_strategy="steps",
     )
 
     # Create and launch Trainer
