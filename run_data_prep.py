@@ -28,6 +28,10 @@ def main(dataset_name):
         print("Preparing Chai Duduk dataset...")
         from data_prep.chai_duduk import prep_data
         prep_data()
+    elif dataset_name == "chai_duduk_unmasked":
+        print("Preparing Chai Duduk Unmasked dataset...")
+        from data_prep.chai_duduk_unmasked import prep_data
+        prep_data()
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}. Choose 'human_like_dpo' or 'flammenai_dpo'.")
 
