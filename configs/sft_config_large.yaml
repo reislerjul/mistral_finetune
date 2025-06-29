@@ -1,0 +1,30 @@
+# Paths
+train_dataset_path: /home/ubuntu/mistral-finetune/mistral_finetune/data/chai_duduk/train
+eval_dataset_path: /home/ubuntu/mistral-finetune/mistral_finetune/data/chai_duduk/eval
+output_dir: /home/ubuntu/mistral-finetune/mistral_finetune/models/mistral-sft-large
+
+# Training
+num_epochs: 2
+train_batch_size: 2
+eval_batch_size: 2
+gradient_accumulation_steps: 32
+learning_rate: 5e-5
+weight_decay: 0.01
+lr_scheduler_type: "cosine"
+warmup_steps: 100
+
+# Precision
+bf16: true  # Set to false if using GPU that doesn’t support bfloat16
+
+# Logging & Checkpointing
+logging_steps: 10
+save_strategy: "steps"
+save_steps: 50
+save_total_limit: 10
+evaluation_strategy: "steps"
+eval_steps: 50
+
+# Weights & Biases
+wandb_project: mistral-finetune-sft
+wandb_entity: julia92796
+wandb_run_name: mistral-sft-large
