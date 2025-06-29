@@ -20,6 +20,10 @@ def main(dataset_name):
         print("Combining all datasets...")
         from data_prep.combine_datasets import combine_datasets
         combine_datasets()
+    elif dataset_name == "chai_reward":
+        print("Preparing Chai Reward dataset...")
+        from data_prep.chai_reward import prep_data
+        prep_data()
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}. Choose 'human_like_dpo' or 'flammenai_dpo'.")
 
